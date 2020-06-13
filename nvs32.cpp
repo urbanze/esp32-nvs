@@ -1,6 +1,17 @@
 #include "nvs32.h"
 
-
+/**
+ * @brief Init specifi NVS partition with specific namespace.
+ * 
+ * @attention Custom NVS partition need to be create in partitions.csv.
+ * 
+ * @param [*partition]: Partition name.
+ * @param [*name]: Namespace inside partition.
+ * @param [debug]: Enable debug-log when writing new values to keys.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess
+ */
 int8_t NVS::init(const char *partition, const char *name, int8_t debug=1)
 {
     esp_err_t err;
@@ -23,6 +34,12 @@ int8_t NVS::init(const char *partition, const char *name, int8_t debug=1)
     return 1;
 }
 
+/**
+ * @brief Erase all keys.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::erase_all()
 {
     esp_err_t err = nvs_erase_all(_handler);
@@ -36,6 +53,14 @@ int8_t NVS::erase_all()
     return 1;
 }
 
+/**
+ * @brief Erase specific key.
+ * 
+ * @param [*key]: Key.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::erase_key(const char *key)
 {
     esp_err_t err = nvs_erase_key(_handler, key);
@@ -50,7 +75,18 @@ int8_t NVS::erase_key(const char *key)
 }
 
 
-
+/**
+ * @brief Create new key with [*value] ONLY if this key not exist in memory.
+ * 
+ * @attention .create() functions only create the key if the key not exist.
+ * If it already exists with any value, the value will NOT be overwritten, the last value will remain.
+ * 
+ * @param [*key]: Key.
+ * @param [*value]: String text.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::create(const char *key, const char *value)
 {
     esp_err_t err;
@@ -78,6 +114,18 @@ int8_t NVS::create(const char *key, const char *value)
     return 0;
 }
 
+/**
+ * @brief Create new key with [value] ONLY if this key not exist in memory.
+ * 
+ * @attention .create() functions only create the key if the key not exist.
+ * If it already exists with any value, the value will NOT be overwritten, the last value will remain.
+ * 
+ * @param [*key]: Key.
+ * @param [value]: Value.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::create(const char *key, int32_t value)
 {
     esp_err_t err;
@@ -106,7 +154,15 @@ int8_t NVS::create(const char *key, int32_t value)
 }
 
 
-
+/**
+ * @brief Write new value to key.
+ * 
+ * @param [*key]: Key.
+ * @param [*value]: String text.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::write(const char *key, const char *value)
 {
     esp_err_t err = nvs_set_str(_handler, key, value);
@@ -125,6 +181,15 @@ int8_t NVS::write(const char *key, const char *value)
     return 1;
 }
 
+/**
+ * @brief Write new value to key.
+ * 
+ * @param [*key]: Key.
+ * @param [value]: Value.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::write(const char *key, int32_t value)
 {
     esp_err_t err = nvs_set_i32(_handler, key, value);
@@ -145,7 +210,18 @@ int8_t NVS::write(const char *key, int32_t value)
 
 
 
-
+/**
+ * @brief Read value of specific key.
+ * 
+ * @attention Destiny char buffer [dst] need to be >= of string stored in key.
+ * 
+ * @param [*key]: Key.
+ * @param [*dst]: Char buffer that will receive the stored string.
+ * @param [size]: Max size of [dst] buffer.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::read(const char *key, char *dst, uint16_t size)
 {
     size_t sz; //Size of string allocated in nvs key.
@@ -174,6 +250,16 @@ int8_t NVS::read(const char *key, char *dst, uint16_t size)
     return 1;
 }
 
+/**
+ * @brief Read value of specific key.
+ * 
+ * 
+ * @param [*key]: Key.
+ * @param [*dst]: Buffer that will receive the stored value.
+ * 
+ * @return 0: Fail.
+ * @return 1: Sucess.
+ */
 int8_t NVS::read(const char *key, int32_t *dst)
 {
     esp_err_t err = nvs_get_i32(_handler, key, dst);
